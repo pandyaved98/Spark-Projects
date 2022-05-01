@@ -33,7 +33,7 @@ def rankSum(ranks):
             continue
         total=rank+total
     return total
-file= sc.textFile(r"file:///E:/Devesh/Projects/SparkProject/5-PageRank/web-Google_1.txt").filter(lambda line:'#' not in line)\
+file= sc.textFile(r"file:///E:/Devesh/Projects/SparkProject/Spark-Projects/5-PageRank/web-Google_1.txt").filter(lambda line:'#' not in line)\
 .map(lambda line:line.split('\t'))
 links=file.partitionBy(4,lambda x:int(x[0])%4).groupByKey().cache() #Will return [fromNode,toNodeList[]]
 ranks=links.map(lambda line:[line[0],1.0]) #Will return [fromNode,1.0] where 1.0 is the rank
@@ -43,4 +43,5 @@ for x in range(2):
     newRank=links_rank.reduceByKey(lambda x,y:x+y) #sum all the ranks of same node
     ranks=ranks.leftOuterJoin(newRank).mapValues(rankSum)
     #print(ranks.collect())
+#print(ranks.collect())
 ranks.saveAsTextFile("file:///E:/Devesh/Projects/SparkProject/5-PageRank/out.txt")
